@@ -12,6 +12,21 @@ class Canvas:
         self.draw_drums()
 
     def draw_drums(self):
+        self.draw_sprite('sprites', 'drum_snare', x=38, y=58, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'drum_floor', x=27, y=58, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'drum_rack', x=30, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'drum_kick', x=32, y=57, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+
+        self.draw_sprite('sprites', 'stand_tall', x=22, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'stand_tall', x=45, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'stand_medium', x=25, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'stand_hihat', x=41, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+
+        self.draw_sprite('sprites', 'cymbal_crash1', x=21.5, y=45.5, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'cymbal_crash2', x=44.5, y=45.5, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'cymbal_ride', x=24.5, y=52.5, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'cymbal_hihat', x=41, y=51, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+
         self.draw_sprite('sprites', 'drum_snare', x=37, y=57, rot=0, scale=self.screen_scale)
         self.draw_sprite('sprites', 'drum_floor', x=26, y=57, rot=0, scale=self.screen_scale)
         self.draw_sprite('sprites', 'drum_rack', x=29, y=51, rot=0, scale=self.screen_scale)

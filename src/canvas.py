@@ -13,6 +13,7 @@ class Canvas:
 
     def draw(self):
         self.draw_drums()
+        self.draw_sprite('sprites', 'logo', x=87, y=34, rot=0, scale=self.screen_scale)
 
     def draw_drums(self):
         self.draw_sprite('sprites', 'player', x=33, y=self.player.y+1, rot=0, scale=self.screen_scale, colour=(86, 108, 134))

@@ -238,11 +238,6 @@ def parse_user_input(player, drum_kit, mixer):
                 player.trigger(Input.CRASH2)
                 mixer.play_sound(Input.CRASH2)
 
-    # Snare roll
-    key = pygame.key.get_pressed()
-    if key[pygame.K_LCTRL] and key[pygame.K_a]:
-        print(Input.SNAREROLL)
-
 
 def run_game(screen, canvas, player, drum_kit, mixer):
     player.update()

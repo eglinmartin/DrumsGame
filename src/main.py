@@ -126,7 +126,6 @@ class Cymbal:
 
     def trigger(self):
         if self.hihat:
-            print(self.raised)
             if self.raised:
                 self.rotation_frame = 5
                 self.velocity = self.vel_amount

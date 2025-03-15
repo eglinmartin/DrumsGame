@@ -36,7 +36,7 @@ class Drumstick:
             Input.RIDE: [22, 50, 300],
             Input.HIHAT: [36, 50, 100],
             Input.HIHAT_OPEN: [36, 48, 100],
-            Input.SNARE: [3, 52, 300],
+            Input.SNARE: [37, 52, 300],
             Input.RACKTOM: [29, 48, 300],
             Input.FLOORTOM: [25, 52, 300]
         }

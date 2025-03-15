@@ -1,15 +1,31 @@
 import os
 import pygame
 
+
+class PopUp:
+    def __init__(self, x, y, size):
+        self.x = x
+        self.y = y
+        self.size = size
+
+    def update(self):
+        if self.size > 0:
+            self.size -= 1
+        else:
+            self.size = 0
+
+
 class Canvas:
-    def __init__(self, screen, base_dir, screen_size, screen_scale, player, drum_kit):
+    def __init__(self, screen, base_dir, screen_size, screen_scale, controller, player, drum_kit):
         self.screen = screen
         self.base_dir = base_dir
         self.screen_size = screen_size
         self.screen_scale = screen_scale
 
+        self.controller = controller
         self.drum_kit = drum_kit
         self.player = player
+        self.controller = controller
 
     def draw(self):
         self.draw_drums()
@@ -32,8 +48,9 @@ class Canvas:
         self.draw_sprite('sprites', 'cymbal_crash', x=21.5, y=45.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale, colour=(86, 108, 134))
         self.draw_sprite('sprites', 'cymbal_crash', x=44.5, y=45.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale, colour=(86, 108, 134))
         self.draw_sprite('sprites', 'cymbal_ride', x=24.5, y=52.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'cymbal_hihat', x=41, y=51, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite('sprites', 'cymbal_hihat', x=41, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
 
+        self.draw_sprite('sprites', 'player', x=33, y=self.player.y+1, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
         self.draw_sprite('sprites', 'player', x=32, y=self.player.y, rot=0, scale=self.screen_scale)
         self.draw_sprite('sprites', 'drumstick', x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale)
         self.draw_sprite('sprites', 'drumstick', x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale)
@@ -54,7 +71,8 @@ class Canvas:
         self.draw_sprite('sprites', 'cymbal_crash', x=20.5, y=44.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale)
         self.draw_sprite('sprites', 'cymbal_crash', x=43.5, y=44.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale)
         self.draw_sprite('sprites', 'cymbal_ride', x=23.5, y=51.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'cymbal_hihat', x=40, y=50, rot=0, scale=self.screen_scale)
+        self.draw_sprite('sprites', 'cymbal_hihat', x=40, y=51, rot=0, scale=self.screen_scale)
+        self.draw_sprite('sprites', 'cymbal_hihat_top', x=40, y=self.drum_kit.cymbal_hihat.height, rot=self.drum_kit.cymbal_hihat.rotation, scale=self.screen_scale)
 
     def draw_sprite(self, sprite_dir, sprite_name, x, y, rot, scale, colour=None, flipped=False):
         sprite_img = (pygame.image.load(os.path.join(self.base_dir, 'bin', sprite_dir, f'{sprite_name}.png'))

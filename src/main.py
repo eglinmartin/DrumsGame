@@ -1,9 +1,18 @@
 import sys
 import os
 import pygame
+import random
 
 from utils import Input, create_sine_wave
 from canvas import Canvas
+
+
+class Controller:
+    def __init__(self):
+        pass
+
+    def update(self):
+        pass
 
 
 class Mixer:
@@ -101,7 +110,7 @@ class Player:
 
 
 class Cymbal:
-    def __init__(self, base_angle, vel_amount, direction):
+    def __init__(self, base_angle, vel_amount, direction, hihat=False):
         self.velocity = 0
         self.rotation_animation = create_sine_wave(20, 5, 8, 800)
         self.rotation_frame = 0
@@ -110,9 +119,20 @@ class Cymbal:
         self.rotation = base_angle
         self.direction = direction
 
+        self.hihat = hihat
+        self.raised = False
+        self.base_height = 50
+        self.height = self.base_height
+
     def trigger(self):
-        self.rotation_frame = 5
-        self.velocity = self.vel_amount
+        if self.hihat:
+            print(self.raised)
+            if self.raised:
+                self.rotation_frame = 5
+                self.velocity = self.vel_amount
+        else:
+            self.rotation_frame = 5
+            self.velocity = self.vel_amount
 
     def update(self):
         if self.velocity > 0:
@@ -132,6 +152,18 @@ class Cymbal:
                 self.rotation = self.base_angle-self.rotation_animation[self.rotation_frame] * self.velocity
         else:
             self.rotation = self.base_angle
+
+        if self.hihat:
+            if self.raised:
+                if self.height > (self.base_height - 0.8):
+                    self.height -= 0.2
+                else:
+                    self.height = (self.base_height - 0.8)
+            else:
+                if self.height < self.base_height:
+                    self.height += 0.4
+                else:
+                    self.height = self.base_height
 
 
 class Drum:
@@ -157,6 +189,7 @@ class DrumKit:
         self.racktom = Drum(base_angle=355, vel_amount=1)
         self.floortom = Drum(base_angle=0, vel_amount=1)
 
+        self.cymbal_hihat = Cymbal(base_angle=0, vel_amount=1, direction=1, hihat=True)
         self.cymbal_crash1 = Cymbal(base_angle=340, vel_amount=4, direction=0)
         self.cymbal_crash2 = Cymbal(base_angle=20, vel_amount=4, direction=1)
         self.cymbal_ride = Cymbal(base_angle=355, vel_amount=1, direction=0)
@@ -167,20 +200,27 @@ class DrumKit:
         self.racktom.update()
         self.floortom.update()
 
+        self.cymbal_hihat.update()
         self.cymbal_crash1.update()
         self.cymbal_crash2.update()
         self.cymbal_ride.update()
 
 
-def parse_user_input(player, drum_kit, mixer):
+def parse_user_input(player, drum_kit, mixer, controller):
+    # Get state of held keys
+    key = pygame.key.get_pressed()
+    if key[pygame.K_LSHIFT]:
+        drum_kit.cymbal_hihat.raised = False
+    else:
+        drum_kit.cymbal_hihat.raised = True
+
+    # Get state of pressed keys
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
         if event.type == pygame.KEYDOWN:
-            key = pygame.key.get_pressed()
-
             # Kick drum
             if event.key == pygame.K_SPACE:
                 drum_kit.kick.trigger()
@@ -207,14 +247,13 @@ def parse_user_input(player, drum_kit, mixer):
 
             # Hi-hat cymbal
             if event.key == pygame.K_PERIOD:
-                if key[pygame.K_LSHIFT]:
-                    player.trigger(Input.HIHAT)
-                    mixer.play_sound(Input.HIHAT)
-                    print('closed')
-                else:
+                if drum_kit.cymbal_hihat.raised:
+                    drum_kit.cymbal_hihat.trigger()
                     player.trigger(Input.HIHAT_OPEN)
                     mixer.play_sound(Input.HIHAT_OPEN)
-                    print('open')
+                else:
+                    player.trigger(Input.HIHAT)
+                    mixer.play_sound(Input.HIHAT)
 
             # Hi-hat pedal
             if event.key == pygame.K_LSHIFT:
@@ -239,14 +278,15 @@ def parse_user_input(player, drum_kit, mixer):
                 mixer.play_sound(Input.CRASH2)
 
 
-def run_game(screen, canvas, player, drum_kit, mixer):
+def run_game(screen, canvas, player, drum_kit, mixer, controller):
     player.update()
     drum_kit.update()
+    controller.update()
 
     clock = pygame.time.Clock()
     fps = 60
 
-    parse_user_input(player, drum_kit, mixer)
+    parse_user_input(player, drum_kit, mixer, controller)
 
     screen.fill((148, 176, 194))
     canvas.draw()
@@ -267,12 +307,14 @@ def main():
     screen = pygame.display.set_mode((screen_size['width']*screen_scale,
                                      screen_size['height']*screen_scale))
 
+    controller = Controller()
+
     player = Player()
     drum_kit = DrumKit()
-    canvas = Canvas(screen, base_dir, screen_size, screen_scale, player, drum_kit)
+    canvas = Canvas(screen, base_dir, screen_size, screen_scale, controller, player, drum_kit)
 
     while True:
-        run_game(screen, canvas, player, drum_kit, mixer)
+        run_game(screen, canvas, player, drum_kit, mixer, controller)
 
 
 if __name__ == '__main__':

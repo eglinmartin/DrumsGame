@@ -38,7 +38,7 @@ class Drumstick:
             Input.HIHAT_OPEN: [36, 48, 100],
             Input.SNARE: [37, 52, 300],
             Input.RACKTOM: [29, 48, 300],
-            Input.FLOORTOM: [25, 52, 300]
+            Input.FLOORTOM: [26, 54, 300]
         }
 
     def trigger(self, input_type):

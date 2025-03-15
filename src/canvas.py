@@ -16,8 +16,6 @@ class Canvas:
         self.draw_sprite('sprites', 'logo', x=87, y=34, rot=0, scale=self.screen_scale)
 
     def draw_drums(self):
-        self.draw_sprite('sprites', 'player', x=33, y=self.player.y+1, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-
         self.draw_sprite('sprites', 'stand_tall', x=22, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
         self.draw_sprite('sprites', 'stand_tall', x=45, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
         self.draw_sprite('sprites', 'stand_medium', x=25, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
@@ -36,8 +34,8 @@ class Canvas:
         self.draw_sprite('sprites', 'cymbal_ride', x=24.5, y=52.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale, colour=(86, 108, 134))
         self.draw_sprite('sprites', 'cymbal_hihat', x=41, y=51, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
 
-        self.draw_sprite('sprites', 'drumstick', x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale)
         self.draw_sprite('sprites', 'player', x=32, y=self.player.y, rot=0, scale=self.screen_scale)
+        self.draw_sprite('sprites', 'drumstick', x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale)
         self.draw_sprite('sprites', 'drumstick', x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale)
 
         self.draw_sprite('sprites', 'stand_tall', x=21, y=51, rot=0, scale=self.screen_scale)
@@ -48,10 +46,10 @@ class Canvas:
         self.draw_sprite('sprites', 'stand_snare', x=36, y=59, rot=0, scale=self.screen_scale)
         self.draw_sprite('sprites', 'stand_floortom', x=26, y=60, rot=0, scale=self.screen_scale)
 
-        self.draw_sprite('sprites', 'drum_snare', x=36, y=55, rot=self.drum_kit.snare.rotation, scale=self.screen_scale+self.drum_kit.snare.scale)
-        self.draw_sprite('sprites', 'drum_floor', x=26, y=57, rot=self.drum_kit.floortom.rotation, scale=self.screen_scale+self.drum_kit.floortom.scale)
-        self.draw_sprite('sprites', 'drum_rack', x=29, y=51, rot=self.drum_kit.racktom.rotation, scale=self.screen_scale+self.drum_kit.racktom.scale)
-        self.draw_sprite('sprites', 'drum_kick', x=31, y=56, rot=self.drum_kit.kick.rotation, scale=self.screen_scale+self.drum_kit.kick.scale)
+        self.draw_sprite('sprites', 'drum_snare', x=36, y=55, rot=self.drum_kit.snare.rotation, scale=self.screen_scale+(self.drum_kit.snare.scale/4 * self.screen_scale))
+        self.draw_sprite('sprites', 'drum_floor', x=26, y=57, rot=self.drum_kit.floortom.rotation, scale=self.screen_scale+(self.drum_kit.floortom.scale/4 * self.screen_scale))
+        self.draw_sprite('sprites', 'drum_rack', x=29, y=51, rot=self.drum_kit.racktom.rotation, scale=self.screen_scale+(self.drum_kit.racktom.scale/4 * self.screen_scale))
+        self.draw_sprite('sprites', 'drum_kick', x=31, y=56, rot=self.drum_kit.kick.rotation, scale=self.screen_scale+(self.drum_kit.kick.scale/4 * self.screen_scale))
 
         self.draw_sprite('sprites', 'cymbal_crash', x=20.5, y=44.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale)
         self.draw_sprite('sprites', 'cymbal_crash', x=43.5, y=44.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale)

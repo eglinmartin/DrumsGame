@@ -39,15 +39,17 @@ class Drumstick:
         self.distance_y = 0
         self.distance_rot = 0
 
+        # self.left_stick = Drumstick(base_x=36, base_y=49)
+        # self.right_stick = Drumstick(base_x=30, base_y=49)
         self.trigger_positions = {
-            Input.CRASH1: [24, 46, 225],
-            Input.CRASH2: [40, 45, 135],
-            Input.RIDE: [22, 50, 300],
-            Input.HIHAT: [36, 50, 100],
-            Input.HIHAT_OPEN: [36, 48, 100],
-            Input.SNARE: [37, 52, 300],
-            Input.RACKTOM: [29, 48, 300],
-            Input.FLOORTOM: [26, 54, 300]
+            Input.CRASH1: [self.x-6, self.y-4, 225],
+            Input.CRASH2: [self.x+6, self.y-5, 135],
+            Input.RIDE: [self.x-2, self.y+1, 260],
+            Input.HIHAT: [self.x+7, self.y, 100],
+            Input.HIHAT_OPEN: [self.x+7, self.y-1, 100],
+            Input.SNARE: [self.x+2, self.y+4, 330],
+            Input.RACKTOM: [self.x-7, self.y+1, 320],
+            Input.FLOORTOM: [self.x-1, self.y+4, 300]
         }
 
     def trigger(self, input_type):
@@ -83,12 +85,13 @@ class Drumstick:
 
 
 class Player:
-    def __init__(self):
-        self.base_y = 48
+    def __init__(self, drum_kit):
+        self.x = drum_kit.x + 1
+        self.base_y = drum_kit.y - 8
         self.y = self.base_y
 
-        self.left_stick = Drumstick(base_x=36, base_y=49)
-        self.right_stick = Drumstick(base_x=30, base_y=49)
+        self.left_stick = Drumstick(base_x=self.x+4, base_y=self.y+1)
+        self.right_stick = Drumstick(base_x=self.x-4, base_y=self.y+1)
 
     def trigger(self, input_type):
         if input_type == Input.KICK:
@@ -109,8 +112,22 @@ class Player:
         self.right_stick.update()
 
 
+class Hardware:
+    def __init__(self, x, y, name):
+        self.x = x
+        self.y = y
+        self.rotation = 0
+        self.scale = 0
+        self.name = name
+
+    def update(self):
+        pass
+
+
 class Cymbal:
-    def __init__(self, base_angle, vel_amount, direction, hihat=False):
+    def __init__(self, x, y, base_angle, vel_amount, direction, name, hihat=False):
+        self.x = x
+        self.y = y
         self.velocity = 0
         self.rotation_animation = create_sine_wave(20, 5, 8, 800)
         self.rotation_frame = 0
@@ -118,10 +135,12 @@ class Cymbal:
         self.base_angle = base_angle
         self.rotation = base_angle
         self.direction = direction
+        self.name = name
+        self.scale = 0
 
         self.hihat = hihat
         self.raised = False
-        self.base_height = 50
+        self.base_height = y
         self.height = self.base_height
 
     def trigger(self):
@@ -154,22 +173,25 @@ class Cymbal:
 
         if self.hihat:
             if self.raised:
-                if self.height > (self.base_height - 0.8):
-                    self.height -= 0.2
+                if self.y > (self.base_height - 0.8):
+                    self.y -= 0.2
                 else:
-                    self.height = (self.base_height - 0.8)
+                    self.y = (self.base_height - 0.8)
             else:
-                if self.height < self.base_height:
-                    self.height += 0.4
+                if self.y < self.base_height:
+                    self.y += 0.4
                 else:
-                    self.height = self.base_height
+                    self.y = self.base_height
 
 
 class Drum:
-    def __init__(self, base_angle, vel_amount):
+    def __init__(self, x, y, base_angle, vel_amount, name):
+        self.x = x
+        self.y = y
         self.vel_amount = vel_amount
         self.scale = 0
         self.rotation = base_angle
+        self.name = name
 
     def trigger(self):
         self.scale = self.vel_amount
@@ -183,26 +205,39 @@ class Drum:
 
 class DrumKit:
     def __init__(self):
-        self.kick = Drum(base_angle=0, vel_amount=1)
-        self.snare = Drum(base_angle=0, vel_amount=1)
-        self.racktom = Drum(base_angle=355, vel_amount=1)
-        self.floortom = Drum(base_angle=0, vel_amount=1)
+        self.x = 63
+        self.y = 59
 
-        self.cymbal_hihat = Cymbal(base_angle=0, vel_amount=1, direction=1, hihat=True)
-        self.cymbal_crash1 = Cymbal(base_angle=340, vel_amount=4, direction=0)
-        self.cymbal_crash2 = Cymbal(base_angle=20, vel_amount=4, direction=1)
-        self.cymbal_ride = Cymbal(base_angle=355, vel_amount=1, direction=0)
+        self.stand_kick = Hardware(x=self.x, y=self.y+4, name='stand_kick')
+        self.stand_snare = Hardware(x=self.x+5, y=self.y+3, name='stand_snare')
+        self.stand_floortom = Hardware(x=self.x-5, y=self.y+4, name='stand_floortom')
+        self.stand_hihat = Hardware(x=self.x+9, y=self.y-1, name='stand_hihat')
+        self.stand_ride = Hardware(x=self.x-9, y=self.y-1, name='stand_medium')
+        self.stand_crash1 = Hardware(x=self.x-11, y=self.y-5, name='stand_tall')
+        self.stand_crash2 = Hardware(x=self.x+13, y=self.y-5, name='stand_tall')
+        self.cymbal_hihat_bottom = Hardware(x=self.x+9, y=self.y-5, name='cymbal_hihat')
+
+        self.kick = Drum(x=self.x, y=self.y, base_angle=0, vel_amount=1, name='drum_kick')
+        self.snare = Drum(x=self.x+5, y=self.y-1, base_angle=0, vel_amount=1, name='drum_snare')
+        self.racktom = Drum(x=self.x-2, y=self.y-5, base_angle=355, vel_amount=1, name='drum_rack')
+        self.floortom = Drum(x=self.x-5, y=self.y+1, base_angle=0, vel_amount=1, name='drum_floor')
+
+        self.cymbal_hihat = Cymbal(x=self.x+9, y=self.y-6, base_angle=0, vel_amount=1, direction=1, name='cymbal_hihat_top', hihat=True)
+        self.cymbal_crash1 = Cymbal(x=self.x-11.5, y=self.y-11.5, base_angle=340, vel_amount=4, direction=0, name='cymbal_crash')
+        self.cymbal_crash2 = Cymbal(x=self.x+12.5, y=self.y-11.5, base_angle=20, vel_amount=4, direction=1, name='cymbal_crash')
+        self.cymbal_ride = Cymbal(x=self.x-9.5, y=self.y-4.5, base_angle=355, vel_amount=1, direction=0, name='cymbal_ride')
+
+        self.elements = [
+            self.stand_kick, self.stand_snare, self.stand_floortom,
+            self.stand_hihat, self.stand_ride, self.stand_crash1,
+            self.stand_crash2, self.cymbal_hihat_bottom,
+            self.floortom, self.racktom, self.snare, self.kick,
+            self.cymbal_crash1, self.cymbal_hihat, self.cymbal_ride, self.cymbal_crash2
+        ]
 
     def update(self):
-        self.kick.update()
-        self.snare.update()
-        self.racktom.update()
-        self.floortom.update()
-
-        self.cymbal_hihat.update()
-        self.cymbal_crash1.update()
-        self.cymbal_crash2.update()
-        self.cymbal_ride.update()
+        for element in self.elements:
+            element.update()
 
 
 def parse_user_input(player, drum_kit, mixer, controller):
@@ -306,8 +341,8 @@ def main():
 
     controller = Controller()
 
-    player = Player()
     drum_kit = DrumKit()
+    player = Player(drum_kit)
     canvas = Canvas(screen, base_dir, screen_size, screen_scale, controller, player, drum_kit)
 
     clock = pygame.time.Clock()

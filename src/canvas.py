@@ -27,56 +27,64 @@ class Canvas:
         self.player = player
         self.controller = controller
 
+        self.sprites = {}
+        self.load_sprites()
+
+    def load_sprites(self):
+        sprite_dir = os.path.join(self.base_dir, 'bin', 'sprites')
+        for spr_img in os.listdir(sprite_dir):
+            image = pygame.image.load(os.path.join(sprite_dir, spr_img)).convert_alpha()
+            self.sprites[spr_img[:-4]] = image
+
     def draw(self):
         self.draw_drums()
-        self.draw_sprite('sprites', 'logo', x=87, y=34, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['logo'], x=87, y=34, rot=0, scale=self.screen_scale)
 
     def draw_drums(self):
-        self.draw_sprite('sprites', 'stand_tall', x=22, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'stand_tall', x=45, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'stand_medium', x=25, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'stand_hihat', x=41, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'stand_kick', x=32, y=61, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'stand_snare', x=37, y=60, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'stand_floortom', x=27, y=61, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_tall'], x=22, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_tall'], x=45, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_medium'], x=25, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_hihat'], x=41, y=56, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_kick'], x=32, y=61, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_snare'], x=37, y=60, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['stand_floortom'], x=27, y=61, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
 
-        self.draw_sprite('sprites', 'drum_snare', x=37, y=56, rot=0, scale=self.screen_scale+self.drum_kit.snare.scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'drum_floor', x=27, y=56, rot=self.drum_kit.floortom.rotation, scale=self.screen_scale+self.drum_kit.floortom.scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'drum_rack', x=30, y=52, rot=self.drum_kit.racktom.rotation, scale=self.screen_scale+self.drum_kit.racktom.scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'drum_kick', x=32, y=57, rot=0, scale=self.screen_scale+self.drum_kit.kick.scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['drum_snare'], x=37, y=56, rot=0, scale=self.screen_scale+self.drum_kit.snare.scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['drum_floor'], x=27, y=56, rot=self.drum_kit.floortom.rotation, scale=self.screen_scale+self.drum_kit.floortom.scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['drum_rack'], x=30, y=52, rot=self.drum_kit.racktom.rotation, scale=self.screen_scale+self.drum_kit.racktom.scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['drum_kick'], x=32, y=57, rot=0, scale=self.screen_scale+self.drum_kit.kick.scale, colour=(86, 108, 134))
 
-        self.draw_sprite('sprites', 'cymbal_crash', x=21.5, y=45.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'cymbal_crash', x=44.5, y=45.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'cymbal_ride', x=24.5, y=52.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'cymbal_hihat', x=41, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['cymbal_crash'], x=21.5, y=45.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['cymbal_crash'], x=44.5, y=45.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['cymbal_ride'], x=24.5, y=52.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['cymbal_hihat'], x=41, y=52, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
 
-        self.draw_sprite('sprites', 'player', x=33, y=self.player.y+1, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite('sprites', 'player', x=32, y=self.player.y, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'drumstick', x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'drumstick', x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['player'], x=33, y=self.player.y+1, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
+        self.draw_sprite(self.sprites['player'], x=32, y=self.player.y, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['drumstick'], x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['drumstick'], x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale)
 
-        self.draw_sprite('sprites', 'stand_tall', x=21, y=51, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'stand_tall', x=44, y=51, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'stand_medium', x=24, y=55, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'stand_hihat', x=40, y=55, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'stand_kick', x=31, y=60, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'stand_snare', x=36, y=59, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'stand_floortom', x=26, y=60, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_tall'], x=21, y=51, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_tall'], x=44, y=51, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_medium'], x=24, y=55, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_hihat'], x=40, y=55, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_kick'], x=31, y=60, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_snare'], x=36, y=59, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['stand_floortom'], x=26, y=60, rot=0, scale=self.screen_scale)
 
-        self.draw_sprite('sprites', 'drum_snare', x=36, y=55, rot=self.drum_kit.snare.rotation, scale=self.screen_scale+(self.drum_kit.snare.scale/4 * self.screen_scale))
-        self.draw_sprite('sprites', 'drum_floor', x=26, y=57, rot=self.drum_kit.floortom.rotation, scale=self.screen_scale+(self.drum_kit.floortom.scale/4 * self.screen_scale))
-        self.draw_sprite('sprites', 'drum_rack', x=29, y=51, rot=self.drum_kit.racktom.rotation, scale=self.screen_scale+(self.drum_kit.racktom.scale/4 * self.screen_scale))
-        self.draw_sprite('sprites', 'drum_kick', x=31, y=56, rot=self.drum_kit.kick.rotation, scale=self.screen_scale+(self.drum_kit.kick.scale/4 * self.screen_scale))
+        self.draw_sprite(self.sprites['drum_snare'], x=36, y=55, rot=self.drum_kit.snare.rotation, scale=self.screen_scale+(self.drum_kit.snare.scale/4 * self.screen_scale))
+        self.draw_sprite(self.sprites['drum_floor'], x=26, y=57, rot=self.drum_kit.floortom.rotation, scale=self.screen_scale+(self.drum_kit.floortom.scale/4 * self.screen_scale))
+        self.draw_sprite(self.sprites['drum_rack'], x=29, y=51, rot=self.drum_kit.racktom.rotation, scale=self.screen_scale+(self.drum_kit.racktom.scale/4 * self.screen_scale))
+        self.draw_sprite(self.sprites['drum_kick'], x=31, y=56, rot=self.drum_kit.kick.rotation, scale=self.screen_scale+(self.drum_kit.kick.scale/4 * self.screen_scale))
 
-        self.draw_sprite('sprites', 'cymbal_crash', x=20.5, y=44.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'cymbal_crash', x=43.5, y=44.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'cymbal_ride', x=23.5, y=51.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'cymbal_hihat', x=40, y=51, rot=0, scale=self.screen_scale)
-        self.draw_sprite('sprites', 'cymbal_hihat_top', x=40, y=self.drum_kit.cymbal_hihat.height, rot=self.drum_kit.cymbal_hihat.rotation, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['cymbal_crash'], x=20.5, y=44.5, rot=self.drum_kit.cymbal_crash1.rotation, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['cymbal_crash'], x=43.5, y=44.5, rot=self.drum_kit.cymbal_crash2.rotation, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['cymbal_ride'], x=23.5, y=51.5, rot=self.drum_kit.cymbal_ride.rotation, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['cymbal_hihat'], x=40, y=51, rot=0, scale=self.screen_scale)
+        self.draw_sprite(self.sprites['cymbal_hihat_top'], x=40, y=self.drum_kit.cymbal_hihat.height, rot=self.drum_kit.cymbal_hihat.rotation, scale=self.screen_scale)
 
-    def draw_sprite(self, sprite_dir, sprite_name, x, y, rot, scale, colour=None, flipped=False):
-        sprite_img = (pygame.image.load(os.path.join(self.base_dir, 'bin', sprite_dir, f'{sprite_name}.png'))
-                      .convert_alpha())
+    def draw_sprite(self, sprite_img_original, x, y, rot, scale, colour=None, flipped=False):
+        sprite_img = sprite_img_original.copy()
         if colour:
             pixel_array = pygame.PixelArray(sprite_img)
             for px in range(sprite_img.get_width()):

@@ -277,20 +277,18 @@ def parse_user_input(player, drum_kit, mixer, controller):
                 mixer.play_sound(Input.CRASH2)
 
 
-def run_game(screen, canvas, player, drum_kit, mixer, controller):
+def run_game(clock, screen, canvas, player, drum_kit, mixer, controller):
     player.update()
     drum_kit.update()
     controller.update()
-
-    clock = pygame.time.Clock()
-    fps = 60
 
     parse_user_input(player, drum_kit, mixer, controller)
 
     screen.fill((148, 176, 194))
     canvas.draw()
     pygame.display.flip()
-    clock.tick(fps)
+
+    clock.tick(60)
 
 
 def main():
@@ -312,8 +310,9 @@ def main():
     drum_kit = DrumKit()
     canvas = Canvas(screen, base_dir, screen_size, screen_scale, controller, player, drum_kit)
 
+    clock = pygame.time.Clock()
     while True:
-        run_game(screen, canvas, player, drum_kit, mixer, controller)
+        run_game(clock, screen, canvas, player, drum_kit, mixer, controller)
 
 
 if __name__ == '__main__':

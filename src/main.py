@@ -245,7 +245,7 @@ def parse_user_input(player, drum_kit, mixer, controller):
                 mixer.play_sound(Input.FLOORTOM)
 
             # Hi-hat cymbal
-            if event.key == pygame.K_PERIOD:
+            if event.key == pygame.K_COMMA:
                 if drum_kit.cymbal_hihat.raised:
                     drum_kit.cymbal_hihat.trigger()
                     player.trigger(Input.HIHAT_OPEN)
@@ -259,19 +259,19 @@ def parse_user_input(player, drum_kit, mixer, controller):
                 mixer.play_sound(Input.HIHAT)
 
             # Ride cymbal
-            if event.key == pygame.K_COMMA:
+            if event.key == pygame.K_PERIOD:
                 drum_kit.cymbal_ride.trigger()
                 player.trigger(Input.RIDE)
                 mixer.play_sound(Input.RIDE)
 
             # Crash cymbal 1
-            if event.key == pygame.K_m:
+            if event.key == pygame.K_SLASH:
                 drum_kit.cymbal_crash1.trigger()
                 player.trigger(Input.CRASH1)
                 mixer.play_sound(Input.CRASH1)
 
             # Crash cymbal 2
-            if event.key == pygame.K_SLASH:
+            if event.key == pygame.K_m:
                 drum_kit.cymbal_crash2.trigger()
                 player.trigger(Input.CRASH2)
                 mixer.play_sound(Input.CRASH2)

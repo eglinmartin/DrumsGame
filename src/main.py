@@ -205,7 +205,7 @@ class Drum:
 
 class DrumKit:
     def __init__(self):
-        self.x = 63
+        self.x = 31
         self.y = 59
 
         self.stand_kick = Hardware(x=self.x, y=self.y+4, name='stand_kick')
@@ -333,7 +333,7 @@ def main():
     pygame.mixer.init(channels=16)
     mixer = Mixer(base_dir)
 
-    screen_size = {'width':128, 'height': 72}
+    screen_size = {'width':64, 'height': 72}
     screen_scale = 8
 
     screen = pygame.display.set_mode((screen_size['width']*screen_scale,

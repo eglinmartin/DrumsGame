@@ -48,6 +48,11 @@ class Canvas:
         sprites = []
         self.shadow_surf.fill((2, 3, 4))
 
+        # Draw confetti
+        for confetti in self.controller.confetti:
+            sprites.append(self.draw_sprite(self.sprites['confetti'], x=confetti.x+1, y=confetti.y+1, rot=confetti.rotation,
+                                            scale = self.screen_scale * confetti.size, shadow=True))
+
         # Draw logo shadow
         sprites.append(self.draw_sprite(self.sprites['logo'], x=self.controller.logo.x+1,
                                         y=self.controller.logo.y+1, rot=self.controller.logo.rotation,
@@ -70,6 +75,11 @@ class Canvas:
 
     def draw_foreground_layer(self):
         sprites = []
+
+        # Draw confetti
+        for confetti in self.controller.confetti:
+            sprites.append(self.draw_sprite(self.sprites['confetti'], x=confetti.x, y=confetti.y, rot=confetti.rotation,
+                                            scale = self.screen_scale * confetti.size, colour=confetti.colour))
 
         # Draw logo
         sprites.append(self.draw_sprite(self.sprites['logo'], x=self.controller.logo.x,

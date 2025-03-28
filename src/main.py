@@ -3,7 +3,7 @@ import os
 import pygame
 import random
 
-from utils import Input, create_sine_wave
+from utils import Input, Colours, create_sine_wave
 from canvas import Canvas
 
 
@@ -37,13 +37,57 @@ class TitleLogo:
         self.scale = (scale_animation[self.scale_frame]/self.screen_scale)/3
 
 
+class Confetti:
+    def __init__(self, screen_size, colour, size):
+        self.base_size = size
+        self.size = self.base_size
+        self.rotation = random.randint(0, 360)
+        self.colour = (colour)
+
+        self.xbounds = (5, screen_size['width']-5)
+        self.ybounds = (0, 30)
+        self.x = random.randint(self.xbounds[0], self.xbounds[1])
+        self.y = random.randint(self.ybounds[0], self.ybounds[1])
+        self.drop = random.randint(4, 8)
+
+    def update(self):
+        self.size -= self.base_size/50
+        self.y += self.drop/10
+
+
 class Controller:
-    def __init__(self, screen_scale):
+    def __init__(self, screen, screen_size, screen_scale):
         self.logo = TitleLogo(screen_scale)
-        pass
+        self.screen = screen
+        self.screen_size = screen_size
+        self.screen_scale = screen_scale
+
+        self.confetti = []
+
+    def create_confetti(self, trigger):
+        confetti_dict = {
+            Input.KICK: [Colours.DGREY, 7],
+            Input.SNARE: [Colours.RED, 10],
+            Input.RACKTOM: [Colours.ROYALBLUE, 5],
+            Input.FLOORTOM: [Colours.PURPLE, 6],
+            Input.HIHAT: [Colours.YELLOW, 4],
+            Input.HIHAT_OPEN: [Colours.YELLOW, 5],
+            Input.RIDE: [Colours.CYAN, 4],
+            Input.CRASH1: [Colours.LIME, 8],
+            Input.CRASH2: [Colours.GREEN, 8],
+        }
+
+        colour, size = confetti_dict.get(trigger)
+        for i in range(3):
+            self.confetti.append(Confetti(self.screen_size, colour.value, size))
 
     def update(self):
         self.logo.update()
+
+        for confetti in self.confetti:
+            confetti.update()
+            if confetti.size <= 0:
+                self.confetti.remove(confetti)
 
 
 class Mixer:
@@ -52,7 +96,7 @@ class Mixer:
 
         self.channels = {
             Input.KICK: 0, Input.SNARE: 1, Input.RACKTOM: 2, Input.FLOORTOM: 3, Input.HIHAT: 4,
-            Input.HIHAT_OPEN: 4, Input.CRASH1: 5, Input.CRASH2: 5, Input.RIDE: 6}
+            Input.HIHAT_OPEN: 4, Input.CRASH1: 5, Input.CRASH2: 6, Input.RIDE: 7}
 
     def play_sound(self, input_type):
         channel_id = self.channels.get(input_type)
@@ -293,24 +337,28 @@ def parse_user_input(player, drum_kit, mixer, controller):
                 drum_kit.kick.trigger()
                 player.trigger(Input.KICK)
                 mixer.play_sound(Input.KICK)
+                controller.create_confetti(Input.KICK)
 
             # Snare drum
             if event.key == pygame.K_a:
                 drum_kit.snare.trigger()
                 player.trigger(Input.SNARE)
                 mixer.play_sound(Input.SNARE)
+                controller.create_confetti(Input.SNARE)
 
             # Rack tom
             if event.key == pygame.K_s:
                 drum_kit.racktom.trigger()
                 player.trigger(Input.RACKTOM)
                 mixer.play_sound(Input.RACKTOM)
+                controller.create_confetti(Input.RACKTOM)
 
             # Floor tom
             if event.key == pygame.K_d:
                 drum_kit.floortom.trigger()
                 player.trigger(Input.FLOORTOM)
                 mixer.play_sound(Input.FLOORTOM)
+                controller.create_confetti(Input.FLOORTOM)
 
             # Hi-hat cymbal
             if event.key == pygame.K_COMMA:
@@ -318,31 +366,37 @@ def parse_user_input(player, drum_kit, mixer, controller):
                     drum_kit.cymbal_hihat.trigger()
                     player.trigger(Input.HIHAT_OPEN)
                     mixer.play_sound(Input.HIHAT_OPEN)
+                    controller.create_confetti(Input.HIHAT_OPEN)
                 else:
                     player.trigger(Input.HIHAT)
                     mixer.play_sound(Input.HIHAT)
+                    controller.create_confetti(Input.HIHAT)
 
             # Hi-hat pedal
             if event.key == pygame.K_LSHIFT:
                 mixer.play_sound(Input.HIHAT)
+                controller.create_confetti(Input.HIHAT)
 
             # Ride cymbal
             if event.key == pygame.K_PERIOD:
                 drum_kit.cymbal_ride.trigger()
                 player.trigger(Input.RIDE)
                 mixer.play_sound(Input.RIDE)
+                controller.create_confetti(Input.RIDE)
 
             # Crash cymbal 1
             if event.key == pygame.K_SLASH:
                 drum_kit.cymbal_crash1.trigger()
                 player.trigger(Input.CRASH1)
                 mixer.play_sound(Input.CRASH1)
+                controller.create_confetti(Input.CRASH1)
 
             # Crash cymbal 2
             if event.key == pygame.K_m:
                 drum_kit.cymbal_crash2.trigger()
                 player.trigger(Input.CRASH2)
                 mixer.play_sound(Input.CRASH2)
+                controller.create_confetti(Input.CRASH2)
 
 
 def run_game(clock, screen, canvas, player, drum_kit, mixer, controller):
@@ -352,7 +406,7 @@ def run_game(clock, screen, canvas, player, drum_kit, mixer, controller):
 
     parse_user_input(player, drum_kit, mixer, controller)
 
-    screen.fill((148, 176, 194))
+    screen.fill(Colours.LGREY.value)
     canvas.draw()
     pygame.display.flip()
 
@@ -372,7 +426,7 @@ def main():
     screen = pygame.display.set_mode((screen_size['width']*screen_scale,
                                      screen_size['height']*screen_scale))
 
-    controller = Controller(screen_scale)
+    controller = Controller(screen, screen_size, screen_scale)
 
     drum_kit = DrumKit()
     player = Player(drum_kit)

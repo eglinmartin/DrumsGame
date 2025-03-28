@@ -66,10 +66,10 @@ class Controller:
 
     def create_confetti(self, trigger):
         confetti_dict = {
-            Input.KICK: [Colours.DGREY, 7],
+            Input.KICK: [Colours.WHITE, 7],
             Input.SNARE: [Colours.RED, 10],
-            Input.RACKTOM: [Colours.ROYALBLUE, 5],
-            Input.FLOORTOM: [Colours.PURPLE, 6],
+            Input.RACKTOM: [Colours.LBLUE, 5],
+            Input.FLOORTOM: [Colours.ORANGE, 6],
             Input.HIHAT: [Colours.YELLOW, 4],
             Input.HIHAT_OPEN: [Colours.YELLOW, 5],
             Input.RIDE: [Colours.CYAN, 4],

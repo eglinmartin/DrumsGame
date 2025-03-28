@@ -7,12 +7,43 @@ from utils import Input, create_sine_wave
 from canvas import Canvas
 
 
+class TitleLogo:
+    def __init__(self, screen_scale):
+        self.x = 32
+        self.y = 22
+
+        self.rotation = 0
+        self.scale = 0
+        self.rotation_frame = 0
+        self.scale_frame = 0
+        self.screen_scale = screen_scale
+
+    def update(self):
+        # Rotate using sine wave
+        rotation_animation = create_sine_wave(5, 10, 2, 960)
+        self.rotation_frame += 1
+        if self.rotation_frame >= len(rotation_animation) - 1:
+            self.rotation_frame = 0
+
+        # Scale using sine wave
+        scale_animation = create_sine_wave(5, 5, 2, 600)
+        scale_animation = [sc+5 for sc in scale_animation]
+        self.scale_frame += 1
+        if self.scale_frame >= len(scale_animation) - 1:
+            self.scale_frame = 0
+
+        # Set scale and rotation for current frame
+        self.rotation = rotation_animation[self.rotation_frame]/4
+        self.scale = (scale_animation[self.scale_frame]/self.screen_scale)/3
+
+
 class Controller:
-    def __init__(self):
+    def __init__(self, screen_scale):
+        self.logo = TitleLogo(screen_scale)
         pass
 
     def update(self):
-        pass
+        self.logo.update()
 
 
 class Mixer:
@@ -43,8 +74,6 @@ class Drumstick:
         self.distance_y = 0
         self.distance_rot = 0
 
-        # self.left_stick = Drumstick(base_x=36, base_y=49)
-        # self.right_stick = Drumstick(base_x=30, base_y=49)
         self.trigger_positions = {
             Input.CRASH1: [self.x-6, self.y-4, 225],
             Input.CRASH2: [self.x+6, self.y-5, 135],
@@ -343,7 +372,7 @@ def main():
     screen = pygame.display.set_mode((screen_size['width']*screen_scale,
                                      screen_size['height']*screen_scale))
 
-    controller = Controller()
+    controller = Controller(screen_scale)
 
     drum_kit = DrumKit()
     player = Player(drum_kit)

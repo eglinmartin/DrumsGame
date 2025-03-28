@@ -25,10 +25,14 @@ class Canvas:
         self.controller = controller
         self.drum_kit = drum_kit
         self.player = player
-        self.controller = controller
 
         self.sprites = {}
         self.load_sprites()
+
+        self.shadow_surf = pygame.Surface((self.screen_size['width'] * self.screen_scale,
+                                      self.screen_size['height'] * self.screen_scale))
+        self.shadow_surf.set_colorkey((2, 3, 4))
+        self.shadow_surf.set_alpha(128)
 
     def load_sprites(self):
         sprite_dir = os.path.join(self.base_dir, 'bin', 'sprites')
@@ -37,29 +41,59 @@ class Canvas:
             self.sprites[spr_img[:-4]] = image
 
     def draw(self):
-        # Draw shadows
-        self.draw_sprite(self.sprites['logo'], x=32, y=22, rot=0, scale=self.screen_scale)
+        self.draw_shadows_layer()
+        self.draw_foreground_layer()
 
-        # Draw shadows
-        self.draw_sprite(self.sprites['player'], x=self.player.x+1, y=self.player.y+1, rot=0, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite(self.sprites['drumstick'], x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale, colour=(86, 108, 134))
-        self.draw_sprite(self.sprites['drumstick'], x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale, colour=(86, 108, 134))
+    def draw_shadows_layer(self):
+        sprites = []
+        self.shadow_surf.fill((2, 3, 4))
+
+        # Draw logo shadow
+        sprites.append(self.draw_sprite(self.sprites['logo'], x=self.controller.logo.x+1,
+                                        y=self.controller.logo.y+1, rot=self.controller.logo.rotation,
+                                        scale=self.screen_scale, shadow=True))
+
+        # Draw player
+        sprites.append(self.draw_sprite(self.sprites['player'], x=self.player.x+1, y=self.player.y+1, rot=0, scale=self.screen_scale, shadow=True))
+        sprites.append(self.draw_sprite(self.sprites['drumstick'], x=self.player.left_stick.x+1, y=self.player.left_stick.y+1, rot=self.player.left_stick.rot, scale=self.screen_scale, shadow=True))
+        sprites.append(self.draw_sprite(self.sprites['drumstick'], x=self.player.right_stick.x+1, y=self.player.right_stick.y+1, rot=self.player.right_stick.rot, scale=self.screen_scale, shadow=True))
 
         for element in self.drum_kit.elements:
-            self.draw_sprite(self.sprites[element.name], x=element.x + 1, y=element.y + 1, rot=element.rotation,
-                             scale=self.screen_scale, colour=(86, 108, 134))
+            sprites.append(self.draw_sprite(self.sprites[element.name], x=element.x + 1, y=element.y + 1,
+                                            rot=element.rotation, scale=self.screen_scale, shadow=True))
 
-        # Draw foreground
-        self.draw_sprite(self.sprites['player'], self.player.x, y=self.player.y, rot=0, scale=self.screen_scale)
-        self.draw_sprite(self.sprites['drumstick'], x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale)
-        self.draw_sprite(self.sprites['drumstick'], x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale)
+        for sprite in sprites:
+            self.shadow_surf.blit(sprite[0], sprite[1])
+
+        self.screen.blit(self.shadow_surf, (0, 0))
+
+
+    def draw_foreground_layer(self):
+        sprites = []
+
+        # Draw logo
+        sprites.append(self.draw_sprite(self.sprites['logo'], x=self.controller.logo.x,
+                                        y=self.controller.logo.y, rot=self.controller.logo.rotation,
+                                        scale=self.screen_scale + self.controller.logo.scale))
+
+        # Draw player
+        sprites.append(self.draw_sprite(self.sprites['player'], x=self.player.x, y=self.player.y, rot=0, scale=self.screen_scale))
+        sprites.append(self.draw_sprite(self.sprites['drumstick'], x=self.player.left_stick.x, y=self.player.left_stick.y, rot=self.player.left_stick.rot, scale=self.screen_scale))
+        sprites.append(self.draw_sprite(self.sprites['drumstick'], x=self.player.right_stick.x, y=self.player.right_stick.y, rot=self.player.right_stick.rot, scale=self.screen_scale))
+
         for element in self.drum_kit.elements:
-            self.draw_sprite(self.sprites[element.name], x=element.x, y=element.y, rot=element.rotation,
-                             scale=self.screen_scale+element.scale)
+            sprites.append(self.draw_sprite(self.sprites[element.name], x=element.x, y=element.y,
+                           rot=element.rotation, scale=self.screen_scale + element.scale))
+
+        for sprite in sprites:
+            self.screen.blit(sprite[0], sprite[1])
 
 
-    def draw_sprite(self, sprite_img_original, x, y, rot, scale, colour=None, flipped=False, alpha=255):
+    def draw_sprite(self, sprite_img_original, x, y, rot, scale, colour=None, flipped=False, shadow=False):
         sprite_img = sprite_img_original.copy()
+
+        if shadow:
+            colour = (28, 47, 80)
 
         if colour:
             pixel_array = pygame.PixelArray(sprite_img)
@@ -76,8 +110,5 @@ class Canvas:
         if flipped:
             sprite_img = pygame.transform.flip(sprite_img, flip_x=flipped, flip_y=False)
 
-        # if alpha < 255:
-        #     sprite_img.set_alpha(alpha)
-
         rect = sprite_img.get_rect(center=((x*self.screen_scale), (y*self.screen_scale)))
-        self.screen.blit(sprite_img, rect.topleft)
+        return [sprite_img, rect]

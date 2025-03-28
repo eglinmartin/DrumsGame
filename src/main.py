@@ -19,8 +19,12 @@ class Mixer:
     def __init__(self, base_dir):
         self.base_dir = base_dir
 
+        self.channels = {
+            Input.KICK: 0, Input.SNARE: 1, Input.RACKTOM: 2, Input.FLOORTOM: 3, Input.HIHAT: 4,
+            Input.HIHAT_OPEN: 4, Input.CRASH1: 5, Input.CRASH2: 5, Input.RIDE: 6}
+
     def play_sound(self, input_type):
-        channel_id = input_type.value['channel']
+        channel_id = self.channels.get(input_type)
         ogg_name = f'{str(input_type).lower().split('.')[1]}.ogg'
         sound = pygame.mixer.Sound(os.path.join(self.base_dir, 'ogg', ogg_name))
         pygame.mixer.Channel(channel_id).play(sound)
@@ -330,7 +334,7 @@ def main():
     pygame.init()
 
     base_dir = r"C:\Storage\Programming\DrumsGame"
-    pygame.mixer.init(channels=16)
+    pygame.mixer.init(channels=8)
     mixer = Mixer(base_dir)
 
     screen_size = {'width':64, 'height': 72}

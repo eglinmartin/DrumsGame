@@ -3,15 +3,15 @@ from enum import Enum
 
 
 class Input(Enum):
-    KICK = {'id': 0, 'channel': 0}
-    SNARE = {'id': 1, 'channel': 1}
-    RACKTOM = {'id': 2, 'channel': 2}
-    FLOORTOM = {'id': 3, 'channel': 3}
-    HIHAT = {'id': 4, 'channel': 4}
-    HIHAT_OPEN = {'id': 5, 'channel': 4}
-    CRASH1 = {'id': 6, 'channel': 5}
-    RIDE = {'id': 7, 'channel': 6}
-    CRASH2 = {'id': 8, 'channel': 7}
+    KICK = 0
+    SNARE = 1
+    RACKTOM = 2
+    FLOORTOM = 3
+    HIHAT = 4
+    HIHAT_OPEN = 5
+    CRASH1 = 6
+    RIDE = 7
+    CRASH2 = 8
 
 
 def create_sine_wave(frequency, amplitude, duration, sampling_rate):
